@@ -43,12 +43,17 @@ const server = new ApolloServer({
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 });
 
-server.start().then(() => {
-    server.applyMiddleware({ app });
-    app.listen(port, () => {
-        console.log(`NseIndia App started in port ${port}`);
-        console.log(`For API docs: ${hostUrl}/api-docs`);
-        console.log(`Open ${hostUrl} in browser.`);
-        console.log(`For graphql: ${hostUrl}${server.graphqlPath}`);
+
+if(process.env.ENV === 'PROD'){
+    module.exports = app;
+}else{
+    server.start().then(() => {
+        server.applyMiddleware({ app });
+        app.listen(port, () => {
+            console.log(`NseIndia App started in port ${port}`);
+            console.log(`For API docs: ${hostUrl}/api-docs`);
+            console.log(`Open ${hostUrl} in browser.`);
+            console.log(`For graphql: ${hostUrl}${server.graphqlPath}`);
+        })
     })
-})
+}
